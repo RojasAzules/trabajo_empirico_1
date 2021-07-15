@@ -1,0 +1,103 @@
+---
+title: "Trabajo empírico 1"
+author: "David Rojas y Cynthia Valdivia"
+date: "8/14/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+library(urca)
+library(astsa)
+```
+
+# Trabajo Empírico 1
+
+El archivo TE1.txt contiene 3 series de tiempo. Ustedes pueden elegir hacer el trabajo de forma individual o por equipos. Si eligen hacerlo de forma individual tienen que elegir una serie de tiempo. Si eligen hacerlo en equipo, tienen que elegir el número de series igual al de integrantes del equipo de máximo 3 personas. Para las series que eligieron, entre 1 y 3, tienen que realizar los siguientes pasos:
+
+```{r}
+data <- read.csv('./data/TE1.csv')
+data$n <- 1:dim(data)[1]
+
+```
+
+## Serie 1
+
+1. Verificar si la serie es estacionaria: Inquique claramente qué serie se está utilizando.
+
+Hacemos un test de Dickey-Fuller.
+
+```{r}
+# Dickey Fuller - AIC
+df_s1 <- ur.df(data$s1, type = "drift", lags = 15, selectlags = "AIC")
+# Revisar coeficientes
+df_s1@testreg
+# Dickey Fuller - SBIC
+df_s1_ <- ur.df(data$s1, type = "drift", lags = 15, selectlags = "BIC")
+# Revisar coeficientes
+df_s1_@testreg
+
+```
+
+
+(a) Graficar la serie y hacer comentario de lo que se observa visualmente. 
+
+```{r}
+data %>%
+  ggplot(aes(x = n, y = s1)) + 
+  geom_line()
+
+```
+
+(b) Realizar la prueba de raíz unitaria ADF.
+
+
+
+i. Escoger un criterio de información para el número de rezagos P del modelo. Justifica tu elección.
+
+ii. Interpretar el estadístico de R.U., si tiene o no R.U.
+
+iii. Analizar el parámetro estimado ψ de yt−1 para determinar si
+tiene R.U.
+
+iv. Si tuviera raíz untiaria la serie, entoces construya la serie difer-
+enciada △yt.
+
+v. Repita los pasos i-iv hasta que la serie se estacionaria I (0) e
+indique el orden de integración. Justifica tu respuesta.
+
+2. Metodología Box-Jenkins
+
+(a) Graficar la serie estacionaria. Si desde el inicio era estacionaria puede omitir este paso.
+
+(b) Graficar el correlograma, las funciones ACF y PACF. Analizar vi- sualmente y argumente que tipo de modelo podría ser el que genera los datos.
+
+(c) EstimarelolosmodelosARMA(p,q)quepodríanexplicarlaseriede tiempo. Hacer un cuadro con los diferentes modelos que contengan:
+
+i. Los valores estimados de los parámtros ii. Los P-Values
+
+iii. Los valores de los criterios de información de cada modelo. 1
+
+(d) Verificación, verifique el o los modelos obtenidos en el paso (c).
+
+i. Haga una tabla indicando los modelos que sobreidentificó y cuyos parámetros no fueron significativos. Aquí sólo se requiere puntu- alizar los rezagos AR y MA que no son significativos al momento de la verificación con sobreidentificación. Hint: Vaya poniendo rezagos uno a la vez.
+
+ii. Lo más importante: Graficar y analizar el correlograma de la serie de los errores estimadaos {uˆt} y verificar que son ruido blanco.
+
+3. Aplicar el Principio de Parcimonía, los criterios de información u otro argumento teórico para elegir el modelo que mejor explica los datos.
+
+4. Proyecciones de la serie:
+
+(a) Realizar proyecciones dentro de la serie con los primeros 285 datos y calcular el intervalo de confianza de 95%.
+
+(b) Comparar los resultados obtenidos con los 14 datos restantes uti- lizando el ECM y EAM. Analice las diferencias de ambas medidas de ajuste del modelo.
+
+(c) Eliga otr número de datos para hacer la proyección y repita los pasos (a) y (b). Justifique su elección argumentando lo que le gustaría entender o aprender del proceso estocástico.
+
+(d) Analice y compare los resultados.
+
+(e) Realizar una proyección fuera de la serie, incluyendo el intervalo de confianza al 95%. Argumente, que tan confiable es su proyección con los resultados obtenidos en los puntos anteriores; ya sea de corto o largo plazo.
+
